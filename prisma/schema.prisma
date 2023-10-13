@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://gusto:codetest@postgres:5432/lucky_draw?schema=public"
+}
+
+model User {
+  id          Int         @id @default(autoincrement())
+  phoneNumber String
+  createdAt   DateTime    @default(now()) @db.Timestamptz()
+  updatedAt   DateTime    @updatedAt @db.Timestamptz()
+  LuckyDraw   LuckyDraw[]
+
+  @@unique([id, phoneNumber])
+}
+
+model Prize {
+  id          Int         @id @default(autoincrement())
+  name        String
+  slug        String
+  probability Float       @default(0.00)
+  hasQuota    Boolean
+  quota       Quota?
+  LuckyDraw   LuckyDraw[]
+}
+
+model Quota {
+  id        Int   @id @default(autoincrement())
+  prize     Prize @relation(fields: [prizeId], references: [id])
+  prizeId   Int   @unique
+  daily     Int
+  total     Int
+  remaining Int
+}
+
+model LuckyDraw {
+  id               Int      @id @default(autoincrement())
+  user             User     @relation(fields: [userId, user_phone_numer], references: [id, phoneNumber])
+  userId           Int
+  user_phone_numer String
+  prize            Prize    @relation(fields: [prizeId], references: [id])
+  prizeId          Int
+  createdAt        DateTime @default(now()) @db.Timestamptz()
+  updatedAt        DateTime @updatedAt @db.Timestamptz()
+}
