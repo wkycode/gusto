@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
@@ -13,7 +13,7 @@ datasource db {
 
 model User {
   id          Int         @id @default(autoincrement())
-  phoneNumber String
+  phoneNumber String      @unique
   createdAt   DateTime    @default(now()) @db.Timestamptz()
   updatedAt   DateTime    @updatedAt @db.Timestamptz()
   LuckyDraw   LuckyDraw[]
@@ -41,12 +41,13 @@ model Quota {
 }
 
 model LuckyDraw {
-  id               Int      @id @default(autoincrement())
-  user             User     @relation(fields: [userId, user_phone_numer], references: [id, phoneNumber])
-  userId           Int
-  user_phone_numer String
-  prize            Prize    @relation(fields: [prizeId], references: [id])
-  prizeId          Int
-  createdAt        DateTime @default(now()) @db.Timestamptz()
-  updatedAt        DateTime @updatedAt @db.Timestamptz()
+  id              Int      @id @default(autoincrement())
+  user            User     @relation(fields: [userId, userPhoneNumber], references: [id, phoneNumber])
+  userId          Int
+  userPhoneNumber String
+  prize           Prize    @relation(fields: [prizeId], references: [id])
+  prizeId         Int
+  isRedeemed      Boolean
+  createdAt       DateTime @default(now()) @db.Timestamptz()
+  updatedAt       DateTime @updatedAt @db.Timestamptz()
 }

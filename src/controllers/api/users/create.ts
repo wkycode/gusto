@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import prisma from "../../_helpers/prisma.js";
 
 const createSchema = yup.object({
-  phone: yup.string().required(),
+  phoneNumber: yup.string().required(),
 });
 
 const controllersApiUsersCreate = async (req: Request, res: Response) => {

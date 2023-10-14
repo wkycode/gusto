@@ -6,6 +6,7 @@ interface Prize {
   hasQuota: boolean;
 }
 
+// Prize Functions
 const weightedRandom = (items: { value: string; weight: number }[]) => {
   const total_weight = items.reduce((acc, cur) => acc + cur.weight, 0);
   let random_number = Math.random() * total_weight;
@@ -25,5 +26,6 @@ const drawPrize = (prize: Prize[]) => {
   const prize_drawn = weightedRandom(weighted_prize_array);
   console.log(prize_drawn);
 };
+// End of Prize Functions
 
-export default drawPrize;
+export { drawPrize };

@@ -4,10 +4,10 @@ import { Request, Response } from "express";
 const controllersApiUsersShow = async (req: Request, res: Response) => {
   try {
     const {
-      params: { id },
+      params: { phoneNumber },
     } = req;
     const user = await prisma.user.findUnique({
-      where: { id: Number(id) },
+      where: { phoneNumber: String(phoneNumber) },
     });
     return res.status(200).json(user);
   } catch (err) {
