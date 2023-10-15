@@ -10,3 +10,6 @@ Comose Docker (Alternative)
 - Go into DockerContainer(gusto-code-test-api-1) and run
   - npx prisma migrate dev
   - npx prisma db seed
+
+API Doc
+- https://api.postman.com/collections/16136036-3e612cc7-b2b7-4288-b0ee-616d9024694b?access_key=PMAT-01HCTRBHA1JGCVQ5M2QXMQ81VS
