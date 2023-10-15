@@ -20,3 +20,7 @@ API Doc
   - http://localhost:8080/lucky_draw/redeem
     - {"phoneNumber": "66554433", "redeemCode": "YOURCODEHERE"} 
      
+Further improvement 
+- implement swagger
+- config db timezone
+- refractor code
