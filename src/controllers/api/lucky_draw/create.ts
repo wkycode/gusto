@@ -54,7 +54,7 @@ const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
         throw { message: updateQuota?.message };
       }
     }
-    
+
     const luckyDrawRecord = await (
       await import("../../_helpers/lucky-draw/create-draw-record.ts")
     ).default(user_record!.id, user_record!.phoneNumber, prize_drawn_id!);

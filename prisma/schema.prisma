@@ -37,11 +37,11 @@ model LuckyDraw {
   id              Int      @id @default(autoincrement())
   user            User     @relation(fields: [userId, userPhoneNumber], references: [id, phoneNumber])
   userId          Int
-  userPhoneNumber String
+  userPhoneNumber String   @unique
   prize           Prize    @relation(fields: [prizeId], references: [id])
   prizeId         Int
   isRedeemed      Boolean
-  redeemCode      String   @default(uuid())
+  redeemCode      String   @default(uuid()) @unique
   createdAt       DateTime @default(now()) @db.Timestamptz()
   updatedAt       DateTime @updatedAt @db.Timestamptz()
 }
