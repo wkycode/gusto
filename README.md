@@ -22,6 +22,7 @@ API Doc
 
 Assumptions
 - Do not understand Deliverables.3(Same prize can only allocate once), so skipped.
+- Users can attempt another try if the prize drawn exceeded the daily quota.
 
 Further improvement 
 - implement swagger
