@@ -7,7 +7,7 @@ interface Prize {
 }
 
 // Prize Functions
-const weightedRandom = (items: { value: string; weight: number }[]) => {
+const weightedRandom = (items: { value: number; weight: number }[]) => {
   const total_weight = items.reduce((acc, cur) => acc + cur.weight, 0);
   let random_number = Math.random() * total_weight;
   for (let i = 0; i < items.length; i++) {
@@ -18,13 +18,13 @@ const weightedRandom = (items: { value: string; weight: number }[]) => {
   }
 };
 
-const drawPrize = (prize: Prize[]) => {
+const drawPrize = (prize: Prize[]):number|undefined => {
   const weighted_prize_array = prize.map((ele) => ({
-    value: ele.slug,
+    value: ele.id,
     weight: ele.probability,
   }));
   const prize_drawn = weightedRandom(weighted_prize_array);
-  console.log(prize_drawn);
+  return prize_drawn;
 };
 // End of Prize Functions
 

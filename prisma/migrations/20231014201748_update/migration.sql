@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Prize" ALTER COLUMN "daily" DROP NOT NULL,
+ALTER COLUMN "remaining" DROP NOT NULL,
+ALTER COLUMN "total" DROP NOT NULL;

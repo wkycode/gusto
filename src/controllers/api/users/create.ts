@@ -13,7 +13,6 @@ const controllersApiUsersCreate = async (req: Request, res: Response) => {
       abortEarly: false,
       stripUnknown: true,
     });
-    console.log(verifiedData);
     const newUser = await prisma.user.create({ data: verifiedData });
     return res.status(201).json(newUser);
   } catch (err) {

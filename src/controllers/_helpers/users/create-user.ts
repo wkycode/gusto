@@ -1,6 +1,6 @@
 import prisma from "../prisma";
 
-const createUser = async (phoneNumber: string) => {
+const createUser = async (phoneNumber: string)  => {
   try {
     const newUser = await prisma.user.create({
       data: {
@@ -9,8 +9,7 @@ const createUser = async (phoneNumber: string) => {
     });
     return newUser;
   } catch (err) {
-    console.error(err);
-    return err;
+    throw err;
   }
 };
 

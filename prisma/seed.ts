@@ -14,13 +14,19 @@ const main = async () => {
         name: "$5 Cash Coupon",
         slug: "5_cash_coupon",
         probability: 0.005,
-        hasQuota: false,
+        hasQuota: true,
+        daily: 100,
+        total: 500,
+        remaining: 500,
       },
       {
         name: "$2 Cash Coupon",
         slug: "2_cash_coupon",
         probability: 0.02,
-        hasQuota: false,
+        hasQuota: true,
+        daily: 500,
+        total: 5000,
+        remaining: 5000,
       },
       {
         name: "Buy 1 Get 1 Coupon",
@@ -33,24 +39,6 @@ const main = async () => {
         slug: "no_prize",
         probability: 0.175,
         hasQuota: false,
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  const createQuotas = await prisma.quota.createMany({
-    data: [
-      {
-        prizeId: 1,
-        daily: 100,
-        total: 500,
-        remaining: 500,
-      },
-      {
-        prizeId: 2,
-        daily: 500,
-        total: 5000,
-        remaining: 500,
       },
     ],
     skipDuplicates: true,

@@ -27,17 +27,10 @@ model Prize {
   slug        String
   probability Float       @default(0.00)
   hasQuota    Boolean
-  quota       Quota?
+  daily       Int?
+  total       Int?
+  remaining   Int?
   LuckyDraw   LuckyDraw[]
-}
-
-model Quota {
-  id        Int   @id @default(autoincrement())
-  prize     Prize @relation(fields: [prizeId], references: [id])
-  prizeId   Int   @unique
-  daily     Int
-  total     Int
-  remaining Int
 }
 
 model LuckyDraw {
@@ -48,6 +41,7 @@ model LuckyDraw {
   prize           Prize    @relation(fields: [prizeId], references: [id])
   prizeId         Int
   isRedeemed      Boolean
+  redeemCode      String   @default(uuid())
   createdAt       DateTime @default(now()) @db.Timestamptz()
   updatedAt       DateTime @updatedAt @db.Timestamptz()
 }

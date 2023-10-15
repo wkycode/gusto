@@ -4,6 +4,7 @@ import prisma from "../../_helpers/prisma.js";
 import { drawPrize } from "../../_helpers/lucky-draw/draw-prize.ts";
 import handleErrors from "../../_helpers/handle-error.ts";
 import checkUser from "../../_helpers/users/check-user.ts";
+import updateRemainingQuota from "../../_helpers/prize/update-remaining-quota.ts";
 
 const createSchema = yup.object({
   phoneNumber: yup.string().required(),
@@ -12,29 +13,54 @@ const createSchema = yup.object({
 const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
   try {
     const { body } = req;
+
     // Verify Posted Data
     const verifiedData = await createSchema.validate(body, {
       abortEarly: false,
       stripUnknown: true,
     });
-    console.log(verifiedData);
+
     // Check if user exists if not create user record
+    var user_record;
     const existing_user = await checkUser(verifiedData?.phoneNumber);
-    console.log(existing_user, "user exists");
     if (!existing_user) {
       const user = await (
         await import("../../_helpers/users/create-user.ts")
-      ).default(verifiedData?.phoneNumber);
-      console.log(user, "abc");
+      )
+        .default(verifiedData?.phoneNumber)
+        .then((result) => {
+          user_record = result;
+        })
+        .catch((err) => err);
+    } else {
+      user_record = existing_user;
     }
-    // End of Check if user exists if not create user record
 
     const prizes = await prisma.prize.findMany();
-    const prize_drawn = drawPrize(prizes);
+    const prize_drawn_id = drawPrize(prizes);
+    const quotas = prizes.find((ele) => ele.id === prize_drawn_id);
 
-    return res.status(201).json("abc");
+    if (quotas && quotas?.remaining === 0) {
+      throw { message: "Prize has been all gifted." };
+    }
+
+    if (quotas?.remaining) {
+      const updateQuota = await updateRemainingQuota(
+        prize_drawn_id,
+        quotas.daily,
+        quotas?.remaining
+      );
+      if (updateQuota?.error === true) {
+        throw { message: updateQuota?.message };
+      }
+    }
+    
+    const luckyDrawRecord = await (
+      await import("../../_helpers/lucky-draw/create-draw-record.ts")
+    ).default(user_record!.id, user_record!.phoneNumber, prize_drawn_id!);
+
+    return res.status(201).json(luckyDrawRecord);
   } catch (err) {
-    console.log("error");
     return handleErrors(res, err);
   }
 };
