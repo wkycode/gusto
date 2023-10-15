@@ -19,7 +19,10 @@ API Doc
     - {"phoneNumber": "66554433"} 
   - http://localhost:8080/lucky_draw/redeem
     - {"phoneNumber": "66554433", "redeemCode": "YOURCODEHERE"} 
-     
+
+Assumptions
+- Do not understand Deliverables.3(Same prize can only allocate once), so skipped.
+
 Further improvement 
 - implement swagger
 - config db timezone
