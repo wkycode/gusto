@@ -13,3 +13,10 @@ Comose Docker (Alternative)
 
 API Doc
 - https://api.postman.com/collections/16136036-3e612cc7-b2b7-4288-b0ee-616d9024694b?access_key=PMAT-01HCTRBHA1JGCVQ5M2QXMQ81VS
+- POST
+  Content-Type application/json
+  - http://localhost:8080/lucky_draw
+    - {"phoneNumber": "66554433"} 
+  - http://localhost:8080/lucky_draw/redeem
+    - {"phoneNumber": "66554433", "redeemCode": "YOURCODEHERE"} 
+     
