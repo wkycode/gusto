@@ -63,8 +63,8 @@ const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
         quotas.daily,
         quotas?.remaining
       );
-      if (updateQuota?.error === true) {
-        throw { message: updateQuota?.message };
+      if (updateQuota?.error) {
+        throw { message: updateQuota.error.message };
       }
     }
     // End of check Quotas

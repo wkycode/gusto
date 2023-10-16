@@ -28,8 +28,9 @@ const updateRemainingQuota = async (
           await redisClient.unwatch();
           if (!result) {
             return {
-              error: true,
-              message: "slow",
+              error: {
+                message: "slow",
+              },
             };
           } else {
             await prisma.prize.update({
@@ -44,8 +45,9 @@ const updateRemainingQuota = async (
         }
       } else {
         return {
-          error: true,
-          message: "This gift has reached its daily quota.",
+          error: {
+            message: "This gift has reached its daily quota.",
+          },
         };
       }
     }

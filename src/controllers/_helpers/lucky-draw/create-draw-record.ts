@@ -14,9 +14,10 @@ const createDrawRecord = async (
     );
     if (has_user_participated) {
       return {
-        error: true,
-        message:
-          "You have already participated today, please come back tomorrow.",
+        error: {
+          message:
+            "You have already participated today, please come back tomorrow.",
+        },
       };
     } else {
       const luckyDrawRecord = await prisma.luckyDraw.create({

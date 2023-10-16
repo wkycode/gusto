@@ -19,7 +19,7 @@ const controllersApiLuckyDrawUpdate = async (req: Request, res: Response) => {
       `luckyDraw:${verifiedData.userPhoneNumber}: ${verifiedData.redeemCode}`
     );
     if (verifiedData && !retrieveLuckyDrawCache) {
-      await prisma.luckyDraw.updateMany({
+      const redeemPrize = await prisma.luckyDraw.updateMany({
         where: {
           userPhoneNumber: verifiedData.userPhoneNumber,
           redeemCode: verifiedData.redeemCode,
@@ -29,16 +29,23 @@ const controllersApiLuckyDrawUpdate = async (req: Request, res: Response) => {
         },
       });
 
-      await redisClient.set(
-        `luckyDraw:${verifiedData.userPhoneNumber}: ${verifiedData.redeemCode}`,
-        1
-      );
-
-      return res.status(201).json({
-        isRedeemed: true,
-        redeemCode: verifiedData.redeemCode,
-        userPhoneNumber: verifiedData.userPhoneNumber,
-      });
+      if (redeemPrize.count !== 0) {
+        await redisClient.set(
+          `luckyDraw:${verifiedData.userPhoneNumber}: ${verifiedData.redeemCode}`,
+          1
+        );
+        return res.status(201).json({
+          isRedeemed: true,
+          redeemCode: verifiedData.redeemCode,
+          userPhoneNumber: verifiedData.userPhoneNumber,
+        });
+      } else {
+        return res.status(400).json({
+          error: {
+            message: "Invalid lucky draw record",
+          },
+        });
+      }
     } else {
       return res
         .status(201)
