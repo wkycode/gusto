@@ -21,23 +21,6 @@ const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
       stripUnknown: true,
     });
 
-    // Check if user exists if not create user record
-    var userRecord;
-    const existingUser = await checkUser(verifiedData?.phoneNumber);
-    if (!existingUser) {
-      await (
-        await import("../../_helpers/users/create-user.ts")
-      )
-        .default(verifiedData?.phoneNumber)
-        .then((result) => {
-          userRecord = result;
-        })
-        .catch((err) => err);
-    } else {
-      userRecord = existingUser;
-    }
-    // End of Check if user exists if not create user record
-
     // Draw Prize
     const prizesCache = await redisClient.get("prizes");
     var prizes;
@@ -68,6 +51,23 @@ const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
       }
     }
     // End of check Quotas
+
+    // Check if user exists if not create user record
+    var userRecord;
+    const existingUser = await checkUser(verifiedData?.phoneNumber);
+    if (!existingUser) {
+      await (
+        await import("../../_helpers/users/create-user.ts")
+      )
+        .default(verifiedData?.phoneNumber)
+        .then((result) => {
+          userRecord = result;
+        })
+        .catch((err) => err);
+    } else {
+      userRecord = existingUser;
+    }
+    // End of Check if user exists if not create user record
 
     const luckyDrawRecord = await (
       await import("../../_helpers/lucky-draw/create-draw-record.ts")
