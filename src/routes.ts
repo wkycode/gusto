@@ -2,11 +2,7 @@ import { Router, Request, Response } from "express";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-  res.send("HOT RELOAD DqqES");
-});
-
-router.get("/test", async (req: Request, res: Response) => {
-  res.send("test");
+  res.send("Root");
 });
 
 router.post(
@@ -19,6 +15,4 @@ router.post(
   (await import("./controllers/api/lucky_draw/update.ts")).default
 );
 
-
 export default router;
-// router.post('/api/wishlists', (await import('./controllers/api/wishlists/create.js')).default)

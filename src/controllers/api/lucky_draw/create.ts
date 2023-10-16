@@ -5,6 +5,7 @@ import { drawPrize } from "../../_helpers/lucky-draw/draw-prize.ts";
 import handleErrors from "../../_helpers/handle-error.ts";
 import checkUser from "../../_helpers/users/check-user.ts";
 import updateRemainingQuota from "../../_helpers/prize/update-remaining-quota.ts";
+import redisClient from "../../_helpers/redis.ts";
 
 const createSchema = yup.object({
   phoneNumber: yup.string().required(),
@@ -21,32 +22,44 @@ const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
     });
 
     // Check if user exists if not create user record
-    var user_record;
-    const existing_user = await checkUser(verifiedData?.phoneNumber);
-    if (!existing_user) {
-      const user = await (
+    var userRecord;
+    const existingUser = await checkUser(verifiedData?.phoneNumber);
+    if (!existingUser) {
+      await (
         await import("../../_helpers/users/create-user.ts")
       )
         .default(verifiedData?.phoneNumber)
         .then((result) => {
-          user_record = result;
+          userRecord = result;
         })
         .catch((err) => err);
     } else {
-      user_record = existing_user;
+      userRecord = existingUser;
     }
+    // End of Check if user exists if not create user record
 
-    const prizes = await prisma.prize.findMany();
-    const prize_drawn_id = drawPrize(prizes);
-    const quotas = prizes.find((ele) => ele.id === prize_drawn_id);
+    // Draw Prize
+    const prizesCache = await redisClient.get("prizes");
+    var prizes;
+    if (!prizesCache) {
+      const getPrizes = await prisma.prize.findMany();
+      await redisClient.set("prizes", JSON.stringify(getPrizes));
+      prizes = getPrizes;
+    } else {
+      prizes = JSON.parse(prizesCache);
+    }
+    const prizeDrawnId = drawPrize(prizes);
+    // End of Draw Prize
+
+    // Check Quotas
+    const quotas = prizes.find((ele: any) => ele.id === prizeDrawnId);
 
     if (quotas && quotas?.remaining === 0) {
       throw { message: "Prize has been all gifted." };
     }
-
     if (quotas?.remaining) {
       const updateQuota = await updateRemainingQuota(
-        prize_drawn_id,
+        prizeDrawnId,
         quotas.daily,
         quotas?.remaining
       );
@@ -54,10 +67,11 @@ const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
         throw { message: updateQuota?.message };
       }
     }
+    // End of check Quotas
 
     const luckyDrawRecord = await (
       await import("../../_helpers/lucky-draw/create-draw-record.ts")
-    ).default(user_record!.id, user_record!.phoneNumber, prize_drawn_id!);
+    ).default(userRecord!.id, userRecord!.phoneNumber, prizeDrawnId!);
 
     return res.status(201).json(luckyDrawRecord);
   } catch (err) {

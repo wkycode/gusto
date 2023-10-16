@@ -12,13 +12,9 @@ const updateRemainingQuota = async (
     const dailyQuotaCacheResult = await redisClient.get(
       `quota:${prizeDrawnId}:${currentDate}`
     );
-    console.log(dailyQuotaCacheResult, "dailyQuotaCacheResult");
 
     if (!dailyQuotaCacheResult) {
-      const setQuotaCache = await redisClient.set(
-        `quota:${prizeDrawnId}:${currentDate}`,
-        1
-      );
+      await redisClient.set(`quota:${prizeDrawnId}:${currentDate}`, 1);
     } else {
       if (Number(dailyQuotaCacheResult) < dailyQuota) {
         if (dailyQuota - Number(dailyQuotaCacheResult) === 1) {

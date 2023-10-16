@@ -9,16 +9,16 @@ interface Prize {
 // Prize Functions
 const weightedRandom = (items: { value: number; weight: number }[]) => {
   const total_weight = items.reduce((acc, cur) => acc + cur.weight, 0);
-  let random_number = Math.random() * total_weight;
+  let randomNumber = Math.random() * total_weight;
   for (let i = 0; i < items.length; i++) {
-    if (random_number < items[i].weight) {
+    if (randomNumber < items[i].weight) {
       return items[i].value;
     }
-    random_number -= items[i].weight;
+    randomNumber -= items[i].weight;
   }
 };
 
-const drawPrize = (prize: Prize[]):number|undefined => {
+const drawPrize = (prize: Prize[]): number | undefined => {
   const weighted_prize_array = prize.map((ele) => ({
     value: ele.id,
     weight: ele.probability,

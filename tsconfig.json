@@ -11,5 +11,5 @@
     "outDir": "./dist",
     "rootDir": "./"
   },
-  // "include": ["src/**/*", "server.ts", "prisma"]
+  // "include": ["src/**/*", "**/*", "server.ts", "prisma"]
 }

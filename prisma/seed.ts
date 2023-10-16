@@ -2,9 +2,9 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const main = async () => {
-  const user = await prisma.user.create({
+  const createUser = await prisma.user.create({
     data: {
-      phoneNumber: "55512332",
+      phoneNumber: "55667788",
     },
   });
 

@@ -19,7 +19,7 @@ const controllersApiLuckyDrawUpdate = async (req: Request, res: Response) => {
       `luckyDraw:${verifiedData.userPhoneNumber}: ${verifiedData.redeemCode}`
     );
     if (verifiedData && !retrieveLuckyDrawCache) {
-      const redeemRecord = await prisma.luckyDraw.update({
+      await prisma.luckyDraw.updateMany({
         where: {
           userPhoneNumber: verifiedData.userPhoneNumber,
           redeemCode: verifiedData.redeemCode,
@@ -28,11 +28,17 @@ const controllersApiLuckyDrawUpdate = async (req: Request, res: Response) => {
           isRedeemed: true,
         },
       });
-      const { isRedeemed, redeemCode: rc, userPhoneNumber: upn } = redeemRecord;
-      await redisClient.set(`luckyDraw:${upn}: ${rc}`, 1);
-      return res
-        .status(201)
-        .json({ isRedeemed: isRedeemed, redeemCode: rc, userPhoneNumber: upn });
+
+      await redisClient.set(
+        `luckyDraw:${verifiedData.userPhoneNumber}: ${verifiedData.redeemCode}`,
+        1
+      );
+
+      return res.status(201).json({
+        isRedeemed: true,
+        redeemCode: verifiedData.redeemCode,
+        userPhoneNumber: verifiedData.userPhoneNumber,
+      });
     } else {
       return res
         .status(201)
