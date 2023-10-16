@@ -8,18 +8,23 @@ import updateRemainingQuota from "../../_helpers/prize/update-remaining-quota.ts
 import redisClient from "../../_helpers/redis.ts";
 
 const createSchema = yup.object({
-  phoneNumber: yup.string().required(),
+  phoneNumber: yup
+    .string()
+    .required()
+    .matches(/^\d+$/, "The field should have digits only"),
+  // If there are regional prefix, update the regex
 });
 
 const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
   try {
     const { body } = req;
 
-    // Verify Posted Data
+    // Verify Request Body
     const verifiedData = await createSchema.validate(body, {
       abortEarly: false,
       stripUnknown: true,
     });
+    // End of Verify Request Body
 
     // Draw Prize
     const prizesCache = await redisClient.get("prizes");
@@ -36,7 +41,6 @@ const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
 
     // Check Quotas
     const quotas = prizes.find((ele: any) => ele.id === prizeDrawnId);
-
     if (quotas && quotas?.remaining === 0) {
       throw { message: "Prize has been all gifted." };
     }
@@ -69,11 +73,12 @@ const controllersApiLuckyDrawCreate = async (req: Request, res: Response) => {
     }
     // End of Check if user exists if not create user record
 
+    // Create lucky Draw record
     const luckyDrawRecord = await (
       await import("../../_helpers/lucky-draw/create-draw-record.ts")
     ).default(userRecord!.id, userRecord!.phoneNumber, prizeDrawnId!);
-
     return res.status(201).json(luckyDrawRecord);
+    // End of Create lucky Draw record
   } catch (err) {
     return handleErrors(res, err);
   }

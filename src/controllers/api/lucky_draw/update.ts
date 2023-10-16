@@ -18,7 +18,7 @@ const controllersApiLuckyDrawUpdate = async (req: Request, res: Response) => {
     const retrieveLuckyDrawCache = await redisClient.get(
       `luckyDraw:${verifiedData.userPhoneNumber}: ${verifiedData.redeemCode}`
     );
-    if (verifiedData && !retrieveLuckyDrawCache) {
+    if (!retrieveLuckyDrawCache) {
       const redeemPrize = await prisma.luckyDraw.updateMany({
         where: {
           userPhoneNumber: verifiedData.userPhoneNumber,
@@ -28,7 +28,6 @@ const controllersApiLuckyDrawUpdate = async (req: Request, res: Response) => {
           isRedeemed: true,
         },
       });
-
       if (redeemPrize.count !== 0) {
         await redisClient.set(
           `luckyDraw:${verifiedData.userPhoneNumber}: ${verifiedData.redeemCode}`,
@@ -43,9 +42,7 @@ const controllersApiLuckyDrawUpdate = async (req: Request, res: Response) => {
         throw { message: "Invalid lucky draw record" };
       }
     } else {
-      return res
-        .status(201)
-        .json({ message: "Prize has already been redeemed" });
+      throw { message: "Prize has already been redeemed" };
     }
   } catch (err) {
     return handleErrors(res, err);
