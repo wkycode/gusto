@@ -40,11 +40,7 @@ const controllersApiLuckyDrawUpdate = async (req: Request, res: Response) => {
           userPhoneNumber: verifiedData.userPhoneNumber,
         });
       } else {
-        return res.status(400).json({
-          error: {
-            message: "Invalid lucky draw record",
-          },
-        });
+        throw { message: "Invalid lucky draw record" };
       }
     } else {
       return res

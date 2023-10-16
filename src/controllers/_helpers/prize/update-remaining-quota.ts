@@ -21,10 +21,7 @@ const updateRemainingQuota = async (
           await redisClient.watch(`quota:${prizeDrawnId}:${currentDate}`);
           const multi = redisClient.multi();
           multi.incrBy(`quota:${prizeDrawnId}:${currentDate}`, 1);
-          const result = await multi
-            .exec()
-            .catch((err) => console.log(err, "here"));
-          console.log(result, "multi");
+          const result = await multi.exec();
           await redisClient.unwatch();
           if (!result) {
             return {
