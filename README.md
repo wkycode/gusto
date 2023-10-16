@@ -16,15 +16,16 @@ API Doc
 - POST
   Content-Type application/json
   - http://localhost:8080/lucky_draw
-    - {"phoneNumber": "66554433"} 
+    - {"phoneNumber": "PHONENUMBERSTRING"} 
   - http://localhost:8080/lucky_draw/redeem
-    - {"phoneNumber": "66554433", "redeemCode": "YOURCODEHERE"} 
+    - {"phoneNumber": "PHONENUMBERSTRING", "redeemCode": "YOURCODEHERE"} 
 
 Assumptions
 - Do not understand Deliverables.3(Same prize can only allocate once), so skipped.
 - Users can attempt another try if the prize drawn exceeded the daily quota.
 
 Further improvement 
+- jest unit testing
 - implement swagger
 - config db timezone
 - refractor code
